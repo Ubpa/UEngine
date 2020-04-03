@@ -54,13 +54,13 @@ endif()
 Ubpa_InitInstallPrefix()
 
 message(STATUS "----------")
-if(EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/glad/glad.h"
-	AND EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/KHR/khrplatform.h"
-	AND EXISTS "${PROJECT_SOURCE_DIR}/src/_deps/glad/glad.c")
+if(EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/detail/glad/glad.h"
+	AND EXISTS "${PROJECT_SOURCE_DIR}/src/_deps/glad/glad.c"
+	AND EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/detail/KHR/khrplatform.h")
 	message(STATUS "found glad")
 else()
 	message(FATAL_ERROR "not found glad\n"
-		"read setup.md for more detail")
+		"read README.md for more detail")
 endif()
 
 message(STATUS "----------")
@@ -70,21 +70,17 @@ if(TARGET glfw)
 	message(STATUS "glfw3_DIR: ${glfw3_DIR}")
 endif()
 
-message(STATUS "----------")
-if(EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/stb_image.h")
-	message(STATUS "found stb_image.h")
-else()
-	message(FATAL_ERROR "not found stb_image.h in include/_deps/\n"
-		"read README.md for more detail")
-endif()
-
-include_directories(${PROJECT_SOURCE_DIR}/include/_deps/)
-include_directories(${PROJECT_SOURCE_DIR}/include/_deps/imgui)
-
 set(UBPA_UGL_GLAD TRUE)
 
 Ubpa_AddDep(URTR 0.0.1)
 
 Ubpa_AddSubDirsRec(src)
 
-Ubpa_Export(DIRECTORIES "include")
+set(initTail "find_package(glfw3 REQUIRED)
+if(TARGET glfw)
+	message(STATUS \"glfw3_FOUND: \${glfw3_FOUND}\")
+	message(STATUS \"glfw3_DIR: \${glfw3_DIR}\")
+endif()
+")
+
+Ubpa_Export(DIRECTORIES "include" INIT_TAIL "${initTail}")

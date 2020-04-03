@@ -1,11 +1,34 @@
 #pragma once
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+
+#include "SceneMngr.h"
+#include "_deps/imgui/imgui.h"
 
 #define UBPA_UGL_GLAD 1
 #include <UGL/UGL>
 
-// Include glfw3.h after OpenGL definitions
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
+
+#include <functional>
+
+namespace Ubpa {
+	class DeferredRenderer;
+
+	class Engine {
+	public:
+		static Engine& Instance() {
+			static Engine instance;
+			return instance;
+		}
+
+		bool Init(const std::string& title);
+		void Loop(std::function<void()> func);
+		void CleanUp();
+
+	private:
+		Engine() = default;
+
+		DeferredRenderer* rtr;
+		GLFWwindow* window{ nullptr };
+	};
+}
