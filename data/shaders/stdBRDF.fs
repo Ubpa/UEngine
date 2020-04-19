@@ -9,12 +9,12 @@ layout (location = 3) out vec4 GBuffer3;
 //      x   y   z   w
 // 0    [albedo]  roughness
 // 1    [normal]  metalness
-// 2    [ pos  ]    0
+// 2    [ pos  ]    ID
 // 3    0   0   0   0
 
 in VS_OUT {
     vec3 WorldPos;
-    vec2 TexCoords;
+    vec2 TexCoord;
     mat3 TBN;
 } vs_out;
 
@@ -29,15 +29,15 @@ uniform sampler2D normalmap;
 
 void main()
 {
-	vec3 albedo = albedo_factor * texture(albedo_texture, vs_out.TexCoords).rgb;
-	float roughness = roughness_factor * texture(roughness_texture, vs_out.TexCoords).r;
-	float metalness = metalness_factor * texture(metalness_texture, vs_out.TexCoords).r;
-	vec3 normal = texture(normalmap, vs_out.TexCoords).xyz;
+	vec3 albedo = albedo_factor * texture(albedo_texture, vs_out.TexCoord).rgb;
+	float roughness = roughness_factor * texture(roughness_texture, vs_out.TexCoord).r;
+	float metalness = metalness_factor * texture(metalness_texture, vs_out.TexCoord).r;
+	vec3 normal = texture(normalmap, vs_out.TexCoord).xyz;
 	normal = 2 * normal - 1;
 	normal = normalize(vs_out.TBN * normal);
 	
 	GBuffer0 = vec4(albedo, roughness);
 	GBuffer1 = vec4(normal, metalness);
-	GBuffer2 = vec4(vs_out.WorldPos, 0);
+	GBuffer2 = vec4(vs_out.WorldPos, 0.5);
 	GBuffer3 = vec4(0, 0, 0, 0);
 }
