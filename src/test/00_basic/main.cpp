@@ -11,6 +11,10 @@ using namespace Ubpa;
 using namespace std;
 
 struct Rotater : Component {
+    static void OnRegist() {
+        Reflection<Rotater>::Instance();
+    }
+
     void OnUpdate(Cmpt::Rotation* rot) const {
         rot->value = quatf{ vecf3{1.f}, to_radian(1.f) } *rot->value;
     }
@@ -22,6 +26,10 @@ class ImGUIExample : Component {
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 public:
+    static void OnRegist() {
+        Reflection<ImGUIExample>::Instance();
+    }
+
     void OnUpdate() {
         Engine::Instance().AddIMGUICommand([this]() {
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).

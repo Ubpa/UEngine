@@ -271,6 +271,8 @@ __pycache__/
 *.pdf
 *.zip
 
+*.uscene
+
 config/config.out
 
 lib/
