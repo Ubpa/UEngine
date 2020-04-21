@@ -53,15 +53,11 @@ endif()
 # 修改默认的安装路径前缀
 Ubpa_InitInstallPrefix()
 
-message(STATUS "----------")
-if(EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/detail/glad/glad.h"
-	AND EXISTS "${PROJECT_SOURCE_DIR}/src/_deps/glad/glad.c"
-	AND EXISTS "${PROJECT_SOURCE_DIR}/include/_deps/detail/KHR/khrplatform.h")
-	message(STATUS "found glad")
-else()
-	message(FATAL_ERROR "not found glad\n"
-		"read README.md for more detail")
-endif()
+Ubpa_DownloadZip(
+	https://ubpa.github.io/UData/UEngine/imgui.zip
+	imgui.zip
+	SHA256 9E134D8DBE8FD94A292DDD313A80BA77C113CD4756B4429777169C147401E200
+)
 
 message(STATUS "----------")
 find_package(glfw3 REQUIRED)
@@ -69,8 +65,6 @@ if(TARGET glfw)
 	message(STATUS "glfw3_FOUND: ${glfw3_FOUND}")
 	message(STATUS "glfw3_DIR: ${glfw3_DIR}")
 endif()
-
-set(UBPA_UGL_GLAD TRUE)
 
 Ubpa_AddDep(URTR 0.0.5)
 
