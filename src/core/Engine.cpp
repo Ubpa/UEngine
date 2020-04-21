@@ -8,8 +8,6 @@
 #include "../_deps/imgui_impl/imgui_impl_opengl3.h"
 #include "../_deps/imgui_impl/imgui_impl_glfw.h"
 
-#include <UScene/tool/SceneReflectionInit.h>
-
 #include <UScene/UScene.h>
 
 #include <URTR/DeferredRenderer.h>
@@ -20,7 +18,7 @@ using namespace std;
 bool Engine::Init(const std::string& title) {
     static bool init_scene_refl = false;
     if (!init_scene_refl) {
-        SceneReflectionInit();
+        Scene::OnRegist();
         init_scene_refl = true;
     }
 

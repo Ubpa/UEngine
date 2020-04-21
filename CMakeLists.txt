@@ -72,7 +72,7 @@ endif()
 
 set(UBPA_UGL_GLAD TRUE)
 
-Ubpa_AddDep(URTR 0.0.4)
+Ubpa_AddDep(URTR 0.0.5)
 
 Ubpa_AddSubDirsRec(src)
 

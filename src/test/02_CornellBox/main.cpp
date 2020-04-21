@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 #include <string>
-#include <fstream>
 
 using namespace Ubpa;
 using namespace std;
@@ -78,37 +77,65 @@ public:
     }
 };
 
-int main(int argn, char** args)
+int main(int, char**)
 {
-    if (argn != 2) {
-        cout << "usage:" << args[0] << " <file-path>" << endl;
-        return 1;
-    }
-    cout << args[0] << endl << args[1] << endl;
-    
-    Engine::Instance().Init("Ubpa@2020 UEngine - 01 uscene");
+    Engine::Instance().Init("Ubpa@2020 UEngine - 00 basic");
     CmptRegister::Instance().Regist<Rotater, ImGUIExample>();
-    ifstream usceneFile(args[1], ios::in | ios::ate);
-    if (!usceneFile.is_open()) {
-        cout << "ERROR:" << endl
-            << "\t" << "open file (" << args[1] << ") fail" << endl;
-        return 1;
-    }
 
-    size_t size = usceneFile.tellg();
-    usceneFile.seekg(0, ios::beg);
-    char* buffer = new char[size + 1];
-    buffer[size] = 0;
-    usceneFile.read(buffer, size);
-    usceneFile.close();
+    Scene scene("scene");
 
-    DeserializerJSON deserializer;
-    auto scene = deserializer.DeserializeScene(buffer);
-    delete[] buffer;
-    if (!scene)
-        return 1;
+    auto [camera_obj, camera] = scene.CreateSObj<Cmpt::Camera>("camera_obj");
+    auto [cornellbox] = scene.CreateSObj<>("cornellbox");
+    auto [wall_left, geo_wall_left, mat_wall_left] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Material>("wall_left", cornellbox);
+    auto [wall_right, geo_wall_right, mat_wall_right] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Material>("wall_right", cornellbox);
+    auto [wall_up, geo_wall_up, mat_wall_up] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Material>("wall_up", cornellbox);
+    auto [wall_down, geo_wall_down, mat_wall_down] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Material>("wall_down", cornellbox);
+    auto [wall_back, geo_wall_back, mat_wall_back] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Material>("wall_back", cornellbox);
+    auto [rectlight_obj, geo_rectlight, rectlight, r] = scene.CreateSObj<Cmpt::Geometry, Cmpt::Light, Rotater>("rectlight");
+    scene.CreateSObj<ImGUIExample>("imguiExample");
 
-    SceneMngr::Instance().Active(scene, scene->root->GetSObjInTreeWith<Cmpt::Camera>());
+
+    camera_obj->Get<Cmpt::Position>()->value = { 0,0,8 };
+
+    // wall
+    geo_wall_left->SetPrimitive(new Square);
+    geo_wall_right->SetPrimitive(new Square);
+    geo_wall_up->SetPrimitive(new Square);
+    geo_wall_down->SetPrimitive(new Square);
+    geo_wall_back->SetPrimitive(new Square);
+
+    mat_wall_left->SetMaterial(new stdBRDF{ rgbf{0.8,0.2,0.2} });
+    mat_wall_right->SetMaterial(new stdBRDF{ rgbf{0.2,0.2,0.8} });
+    mat_wall_up->SetMaterial(new stdBRDF{ rgbf{0.8f} });
+    mat_wall_down->SetMaterial(new stdBRDF{ rgbf{0.8f} });
+    mat_wall_back->SetMaterial(new stdBRDF{ rgbf{0.8f} });
+
+    wall_left->Get<Cmpt::Position>()->value = { -1,0,0 };
+    wall_left->Get<Cmpt::Rotation>()->value = { vecf3{0,0,1},to_radian(-90.f) };
+
+    wall_right->Get<Cmpt::Position>()->value = { 1,0,0 };
+    wall_right->Get<Cmpt::Rotation>()->value = { vecf3{0,0,1},to_radian(90.f) };
+
+    wall_up->Get<Cmpt::Position>()->value = { 0,1,0 };
+    wall_up->Get<Cmpt::Rotation>()->value = { vecf3{0,0,1},to_radian(180.f) };
+
+    wall_down->Get<Cmpt::Position>()->value = { 0,-1,0 };
+
+    wall_back->Get<Cmpt::Position>()->value = { 0,0,-1 };
+    wall_back->Get<Cmpt::Rotation>()->value = { vecf3{1,0,0},to_radian(90.f) };
+
+    cornellbox->Get<Cmpt::Scale>()->value = { 2,2,2 };
+
+    rectlight->SetLight(new AreaLight{ 50.f, {1,1,1} });
+    geo_rectlight->SetPrimitive(new Square);
+    rectlight_obj->Get<Cmpt::Scale>()->value = { 0.5f,0.5f,0.5f };
+    rectlight_obj->Get<Cmpt::Rotation>()->value = quatf{ vecf3{1,0,0}, to_radian(180.f) };
+
+    SerializerJSON serializer;
+    auto rst = serializer.Serialize(&scene);
+    cout << rst << endl;
+
+    SceneMngr::Instance().Active(&scene, camera_obj);
 
     // Main loop
     Engine::Instance().Loop();

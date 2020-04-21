@@ -27,8 +27,8 @@ bool SceneMngr::Active(Scene* scene, SObj* main_camera_sobj) {
 	if (updatetingScenes->find(scene) == updatetingScenes->end()
 		&& toStartScenes->find(scene) == toStartScenes->end())
 		Insert(scene);
-	actived_scene = scene;
-	this->main_camera_sobj = main_camera_sobj;
+	actived_scene.val = scene;
+	this->main_camera_sobj.val = main_camera_sobj;
 	return true;
 }
 
@@ -40,8 +40,8 @@ void SceneMngr::Update() {
 	for (auto scene : toStopScenes) {
 		updatetingScenes->erase(scene);
 		if (actived_scene == scene) {
-			actived_scene = nullptr;
-			main_camera_sobj = nullptr;
+			actived_scene.val = nullptr;
+			main_camera_sobj.val = nullptr;
 		}
 	}
 	toStopScenes->clear();

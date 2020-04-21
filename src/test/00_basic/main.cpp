@@ -21,11 +21,11 @@ struct Rotater : Component {
 };
 
 class ImGUIExample : Component {
+public:
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-public:
     static void OnRegist() {
         Reflection<ImGUIExample>::Instance();
     }
@@ -75,6 +75,7 @@ public:
 int main(int, char**)
 {
     Engine::Instance().Init("Ubpa@2020 UEngine - 00 basic");
+    CmptRegister::Instance().Regist<Rotater, ImGUIExample>();
 
     Scene scene("scene");
 
@@ -130,10 +131,10 @@ int main(int, char**)
     camera->fov = to_radian(60.f);
     camera->ar = 1280 / static_cast<float>(720);
 
-    light4->light = new PointLight{ 100.f,{0.9f,0.9f,1.f} };
+    light4->SetLight(new PointLight{ 100.f,{0.9f,0.9f,1.f} });
     sobj4->Get<Cmpt::Position>()->value = { 0,4,0 };
 
-    light6->light = new AreaLight{ 100.f, {1,0,1} };
+    light6->SetLight(new AreaLight{ 100.f, {1,0,1} });
     geo6->SetPrimitive(new Square);
     sobj6->Get<Cmpt::Position>()->value = { 0,3,0 };
     sobj6->Get<Cmpt::Rotation>()->value = quatf{ vecf3{1,0,0}, to_radian(180.f) } *sobj6->Get<Cmpt::Rotation>()->value;
@@ -153,4 +154,39 @@ int main(int, char**)
     Engine::Instance().CleanUp();
 
     return 0;
+}
+
+namespace Ubpa::detail::dynamic_reflection {
+    void ReflRegist_Rotater() {
+        Reflection<Rotater>::Instance() // name : struct ::Rotater
+            ;
+        if constexpr (std::is_base_of_v<Component, Rotater>) {
+            Reflection<Rotater>::Instance().RegistConstructor([](SObj* sobj) {
+                if constexpr (std::is_base_of_v<Component, Rotater>) {
+                    if constexpr (Ubpa::detail::SObj_::IsNecessaryCmpt<Rotater>)
+                        return sobj->Get<Rotater>();
+                    else
+                        return sobj->GetOrAttach<Rotater>();
+                };
+                });
+        }
+    }
+}
+namespace Ubpa::detail::dynamic_reflection {
+    void ReflRegist_ImGUIExample() {
+        Reflection<ImGUIExample>::Instance() // name : class ::ImGUIExample
+            .Regist(&ImGUIExample::show_demo_window, "show_demo_window") //  bool
+            .Regist(&ImGUIExample::show_another_window, "show_another_window") //  bool
+            ;
+        if constexpr (std::is_base_of_v<Component, ImGUIExample>) {
+            Reflection<ImGUIExample>::Instance().RegistConstructor([](SObj* sobj) {
+                if constexpr (std::is_base_of_v<Component, ImGUIExample>) {
+                    if constexpr (Ubpa::detail::SObj_::IsNecessaryCmpt<ImGUIExample>)
+                        return sobj->Get<ImGUIExample>();
+                    else
+                        return sobj->GetOrAttach<ImGUIExample>();
+                };
+                });
+        }
+    }
 }
