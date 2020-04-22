@@ -157,7 +157,7 @@ void Engine::Loop() {
         {
             rtr->Render(SceneMngr::Instance().actived_scene,
                 SceneMngr::Instance().main_camera_sobj,
-                io.DisplaySize[0], io.DisplaySize[1]
+                static_cast<size_t>(io.DisplaySize[0]), static_cast<size_t>(io.DisplaySize[1])
             );
         }
 
