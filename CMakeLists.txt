@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 # 设定项目
-project(UEngine VERSION 0.0.2)
+project(UEngine VERSION 0.0.3)
 message(STATUS "[Project] ${PROJECT_NAME}")
 
 # 在 Debug 模式下自动对 dll 和 lib 文件名后边加 d，但 exe 仍然需要手动设置
@@ -32,22 +32,22 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include(FetchContent)
 
-message(STATUS "find package: UCMake v0.4.1")
-find_package(UCMake 0.4.1 QUIET)
+message(STATUS "find package: UCMake 0.4.2")
+find_package(UCMake 0.4.2 QUIET)
 if(${UCMake_FOUND})
 	message(STATUS "UCMake v${UCMake_VERSION} found")
 else()
 	set(_address "https://github.com/Ubpa/UCMake")
-	message(STATUS "UCMake v0.4.1 not found, so fetch it ...\n"
-	"fetch: ${_address} with tag v0.4.1")
+	message(STATUS "UCMake 0.4.2 not found, so fetch it ...\n"
+	"fetch: ${_address} with tag 0.4.2")
 	FetchContent_Declare(
 	  UCMake
 	  GIT_REPOSITORY ${_address}
-	  GIT_TAG "v0.4.1"
+	  GIT_TAG "0.4.2"
 	)
-	message(STATUS "UCMake v0.4.1 fetch done, building ...")
+	message(STATUS "UCMake 0.4.2 fetch done, building ...")
 	FetchContent_MakeAvailable(UCMake)
-	message(STATUS "UCMake v0.4.1 build done")
+	message(STATUS "UCMake 0.4.2 build done")
 endif()
 
 # 修改默认的安装路径前缀
@@ -66,15 +66,8 @@ if(TARGET glfw)
 	message(STATUS "glfw3_DIR: ${glfw3_DIR}")
 endif()
 
-Ubpa_AddDep(URTR 0.0.5)
+Ubpa_AddDep(URTR 0.0.6)
 
 Ubpa_AddSubDirsRec(src)
 
-set(initTail "find_package(glfw3 REQUIRED)
-if(TARGET glfw)
-	message(STATUS \"glfw3_FOUND: \${glfw3_FOUND}\")
-	message(STATUS \"glfw3_DIR: \${glfw3_DIR}\")
-endif()
-")
-
-Ubpa_Export(DIRECTORIES "include" INIT_TAIL "${initTail}")
+Ubpa_Export(DIRECTORIES "include")
