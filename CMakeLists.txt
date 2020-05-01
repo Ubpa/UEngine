@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 # 设定项目
-project(UEngine VERSION 0.0.5)
+project(UEngine VERSION 0.0.6)
 message(STATUS "[Project] ${PROJECT_NAME}")
 
 # 在 Debug 模式下自动对 dll 和 lib 文件名后边加 d，但 exe 仍然需要手动设置
@@ -66,7 +66,7 @@ if(TARGET glfw)
 	message(STATUS "glfw3_DIR: ${glfw3_DIR}")
 endif()
 
-Ubpa_AddDep(URTR 0.0.8)
+Ubpa_AddDep(URTR 0.0.9)
 
 Ubpa_AddSubDirsRec(src)
 
