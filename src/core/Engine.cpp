@@ -15,13 +15,11 @@
 using namespace Ubpa;
 using namespace std;
 
-bool Engine::Init(const std::string& title) {
-    static bool init_scene_refl = false;
-    if (!init_scene_refl) {
-        Scene::OnRegist();
-        init_scene_refl = true;
-    }
+Engine::Engine() {
+    Scene::OnRegister();
+}
 
+bool Engine::Init(const std::string& title) {
     auto glfw_error_callback = [](int error, const char* description) {
         fprintf(stderr, "Glfw Error %d: %s\n", error, description);
     };

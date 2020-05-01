@@ -12,13 +12,13 @@ using namespace Ubpa;
 using namespace std;
 
 namespace Ubpa::detail::dynamic_reflection {
-    void ReflRegist_Rotater();
-    void ReflRegist_ImGUIExample();
+    void ReflRegister_Rotater();
+    void ReflRegister_ImGUIExample();
 }
 
 struct Rotater : Component {
-    static void OnRegist() {
-        detail::dynamic_reflection::ReflRegist_Rotater();
+    static void OnRegister() {
+        detail::dynamic_reflection::ReflRegister_Rotater();
     }
 
     void OnUpdate(Cmpt::Rotation* rot) const {
@@ -32,8 +32,8 @@ public:
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    static void OnRegist() {
-        detail::dynamic_reflection::ReflRegist_ImGUIExample();
+    static void OnRegister() {
+        detail::dynamic_reflection::ReflRegister_ImGUIExample();
     }
 
     void OnUpdate() {
@@ -87,7 +87,7 @@ int main(int argn, char** args)
     cout << args[0] << endl << args[1] << endl;
     
     Engine::Instance().Init("Ubpa@2020 UEngine - 01 uscene");
-    CmptRegister::Instance().Regist<Rotater, ImGUIExample>();
+    CmptRegistrar::Instance().Register<Rotater, ImGUIExample>();
     ifstream usceneFile(args[1], ios::in | ios::ate);
     if (!usceneFile.is_open()) {
         cout << "ERROR:" << endl
@@ -120,11 +120,11 @@ int main(int argn, char** args)
 }
 
 namespace Ubpa::detail::dynamic_reflection {
-    void ReflRegist_Rotater() {
+    void ReflRegister_Rotater() {
         Reflection<Rotater>::Instance() // name : struct ::Rotater
             ;
         if constexpr (std::is_base_of_v<Component, Rotater>) {
-            Reflection<Rotater>::Instance().RegistConstructor([](SObj* sobj) {
+            Reflection<Rotater>::Instance().RegisterConstructor([](SObj* sobj) {
                 if constexpr (std::is_base_of_v<Component, Rotater>) {
                     if constexpr (Ubpa::detail::SObj_::IsNecessaryCmpt<Rotater>)
                         return sobj->Get<Rotater>();
@@ -136,13 +136,13 @@ namespace Ubpa::detail::dynamic_reflection {
     }
 }
 namespace Ubpa::detail::dynamic_reflection {
-    void ReflRegist_ImGUIExample() {
+    void ReflRegister_ImGUIExample() {
         Reflection<ImGUIExample>::Instance() // name : class ::ImGUIExample
-            .Regist(&ImGUIExample::show_demo_window, "show_demo_window") //  bool
-            .Regist(&ImGUIExample::show_another_window, "show_another_window") //  bool
+            .Register(&ImGUIExample::show_demo_window, "show_demo_window") //  bool
+            .Register(&ImGUIExample::show_another_window, "show_another_window") //  bool
             ;
         if constexpr (std::is_base_of_v<Component, ImGUIExample>) {
-            Reflection<ImGUIExample>::Instance().RegistConstructor([](SObj* sobj) {
+            Reflection<ImGUIExample>::Instance().RegisterConstructor([](SObj* sobj) {
                 if constexpr (std::is_base_of_v<Component, ImGUIExample>) {
                     if constexpr (Ubpa::detail::SObj_::IsNecessaryCmpt<ImGUIExample>)
                         return sobj->Get<ImGUIExample>();
