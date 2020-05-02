@@ -1,9 +1,10 @@
-Ubpa_GlobGroupSrcs(RST sources PATHS
-	${CMAKE_CURRENT_SOURCE_DIR}
-	"${PROJECT_SOURCE_DIR}/include/_deps/imgui"
-)
-
-Ubpa_AddTarget_GDR(MODE "LIB"
-	SOURCES ${sources}
-	INC_DIRS "_deps/imgui"
+Ubpa_GetTargetName(core "${PROJECT_SOURCE_DIR}/src/core")
+Ubpa_AddTarget(
+  MODE STATIC
+  SOURCE
+    "${PROJECT_SOURCE_DIR}/include/_deps/imgui"
+  INC
+    "include/_deps/imgui"
+  LIB
+    ${core}
 )

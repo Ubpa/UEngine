@@ -1,15 +1,11 @@
-message(STATUS "config @PROJECT_NAME@ v@PROJECT_VERSION@...")
+message(STATUS "config @PROJECT_NAME@ @PROJECT_VERSION@...")
 
 @PACKAGE_INIT@
 
 @UBPA_PACKAGE_INIT@
 
 find_package(glfw3 REQUIRED)
-if(TARGET glfw)
-	message(STATUS "glfw3_FOUND: ${glfw3_FOUND}")
-	message(STATUS "glfw3_DIR: ${glfw3_DIR}")
-endif()
 
 include ( "${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake" )
 
-message(STATUS "config @PROJECT_NAME@ v@PROJECT_VERSION@ done")
+message(STATUS "config @PROJECT_NAME@ @PROJECT_VERSION@ done")

@@ -1,4 +1,9 @@
-Ubpa_AddTarget_GDR(MODE "LIB"
-	LIBS_GENERAL "glfw;Ubpa::UGL__deps_glad"
-	INC_DIRS "_deps/detail;_deps/imgui"
+Ubpa_AddTarget(
+  MODE STATIC
+  LIB
+    glfw
+    Ubpa::UGL__deps_glad
+  INC
+    "include/_deps/detail"
+    "include/_deps/imgui"
 )
